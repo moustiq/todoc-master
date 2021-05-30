@@ -42,6 +42,7 @@ public abstract class SaveTaskDataBase extends RoomDatabase {
                 contentValues.put("id", 1);
                 contentValues.put("projectId", 1);
                 contentValues.put("name", "tache de test");
+                contentValues.put("creationTimestamp",1);
 
 
                 db.insert("task", OnConflictStrategy.IGNORE, contentValues);

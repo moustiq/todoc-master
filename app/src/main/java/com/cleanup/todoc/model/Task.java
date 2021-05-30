@@ -40,7 +40,8 @@ public class Task {
     /**
      * The timestamp when the task has been created
      */
-    private long creationTimestamp;
+    private int creationTimestamp ;
+    //private Long tsLong = System.currentTimeMillis()/1000;
 
     private boolean isSelected;
     /**
@@ -52,17 +53,18 @@ public class Task {
      * @param creationTimestamp the timestamp when the task has been created to set
      */
 
-    public Task(long projectId, @NonNull String name) {
+    public Task(long projectId, @NonNull String name,int creationTimestamp) {
         this.setProjectId(projectId);
         this.setName(name);
+        this.setCreationTimestamp(creationTimestamp);
 
     }
 
-    @Ignore
-    public Task() {
-        this.setProjectId(projectId);
-        this.setName(name);
-    }
+    //@Ignore
+    //public Task() {
+    //    this.setProjectId(projectId);
+    //    this.setName(name);
+    //}
 
 
     /**
@@ -130,11 +132,11 @@ public class Task {
      *
      * @param creationTimestamp the timestamp when the task has been created to set
      */
-    public void setCreationTimestamp(long creationTimestamp) {
+    public void setCreationTimestamp(int creationTimestamp) {
         this.creationTimestamp = creationTimestamp;
     }
 
-    public long getCreationTimestamp() {
+    public int getCreationTimestamp() {
         return creationTimestamp;
     }
 

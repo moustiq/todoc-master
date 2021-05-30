@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     @NonNull
     private TextView lblNoTasks;
 
-
+    private int tsLong = (int) (System.currentTimeMillis()/1000);
 
     private TaskViewModel taskViewModel;
     private TasksAdapter taskadapter;
@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     }
 
     private void createTask() {
-        Task task = new Task(PROJECT_ID, this.dialogEditText.getText().toString());
+        Task task = new Task(PROJECT_ID, this.dialogEditText.getText().toString(),tsLong);
         this.dialogEditText.setText("");
         this.taskViewModel.createTask(task);
     }
@@ -221,7 +221,8 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
                 Task task = new Task(
 
                         taskProject.getId(),
-                        taskName
+                        taskName,
+                        (int) new Date().getTime()
 
                 );
 
