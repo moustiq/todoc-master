@@ -4,6 +4,7 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,7 +16,7 @@ import java.util.Comparator;
  *
  * @author Gaëtan HERFRAY
  */
-@Entity(foreignKeys = @ForeignKey(entity = Project.class, parentColumns = "id", childColumns ="projectId"), tableName = "task")
+@Entity(foreignKeys = @ForeignKey(entity = Project.class, parentColumns = "id", childColumns ="projectId"), tableName = "task", indices = @Index(value="projectId"))
 public class Task {
     /**
      * The unique identifier of the task
@@ -26,7 +27,8 @@ public class Task {
     /**
      * The unique identifier of the project associated to the task
      */
-    private long projectId;
+
+    public long projectId;
 
     /**
      * The name of the task
@@ -43,12 +45,13 @@ public class Task {
     private int creationTimestamp ;
     //private Long tsLong = System.currentTimeMillis()/1000;
 
+    @Ignore
     private boolean isSelected;
     /**
      * Instantiates a new Task.
      *
-     * @param id                the unique identifier of the task to set
-     * @param projectId         the unique identifier of the project associated to the task to set
+     * @param //id                the unique identifier of the task to set
+     * @param //projectId         the unique identifier of the project associated to the task to set
      * @param name              the name of the task to set
      * @param creationTimestamp the timestamp when the task has been created to set
      */
@@ -59,13 +62,6 @@ public class Task {
         this.setCreationTimestamp(creationTimestamp);
 
     }
-
-    //@Ignore
-    //public Task() {
-    //    this.setProjectId(projectId);
-    //    this.setName(name);
-    //}
-
 
     /**
      * Returns the unique identifier of the task.
@@ -90,13 +86,13 @@ public class Task {
      *
      * @param projectId the unique identifier of the project associated to the task to set
      */
-    private void setProjectId(long projectId) {
+    public void setProjectId(long projectId) {
         this.projectId = projectId;
     }
 
-    public long getProjectId() {
-        return projectId;
-    }
+    //public Task getProjectId() {
+    //    return projectId;
+    //}
 
     /**
      * Returns the project associated to the task.
@@ -147,6 +143,8 @@ public class Task {
     public boolean getSelected() {
         return isSelected;
     }
+
+
 
     /**
      * Comparator to sort task from A to Z

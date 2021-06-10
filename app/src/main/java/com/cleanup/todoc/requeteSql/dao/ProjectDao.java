@@ -7,6 +7,9 @@ import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
 import com.cleanup.todoc.model.Project;
+import com.cleanup.todoc.model.Task;
+
+import java.util.List;
 
 @Dao
 public interface ProjectDao {
@@ -15,6 +18,9 @@ public interface ProjectDao {
     void createProject(Project project);
 
     @Query("SELECT * FROM Project WHERE id = :projectId")
-    LiveData<Project> getProject(long projectId);
+    LiveData<Project>getProject(long projectId);
+
+    @Query("SELECT * FROM Project ")
+    LiveData<List<Project>>getAllProjects();
 
 }

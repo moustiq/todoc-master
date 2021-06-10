@@ -8,6 +8,7 @@ import com.cleanup.todoc.model.Task;
 import com.cleanup.todoc.repositories.ProjectDataRepository;
 import com.cleanup.todoc.repositories.TaskDataRepository;
 
+import java.util.List;
 import java.util.concurrent.Executor;
 
 public class TaskViewModel extends ViewModel {
@@ -17,7 +18,6 @@ public class TaskViewModel extends ViewModel {
     private final Executor executors;
 
     private LiveData<Project> currentProject;
-
 
 
     public TaskViewModel(ProjectDataRepository projectDataSource, TaskDataRepository taskDataSource, Executor executors) {
@@ -33,8 +33,17 @@ public class TaskViewModel extends ViewModel {
         currentProject = projectDataSource.getProject(projectId);
     }
 
-    public LiveData<Project> getTask(long projectId) {
-        return this.currentProject;
+    public LiveData<Project> getProject(long projectId) {
+        //return currentProject.getValue().get((int) projectId);
+        return projectDataSource.getProject(projectId);
+    }
+
+    public LiveData<List<Project>> getAllProjects() {
+        return projectDataSource.getAllProjects();
+    }
+
+    public LiveData<List<Task>> getTask (long taskId) {
+        return taskDataSource.getTasks(taskId);
     }
 
     public void createTask(Task task) {

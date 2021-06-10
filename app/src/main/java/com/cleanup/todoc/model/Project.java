@@ -1,7 +1,6 @@
 package com.cleanup.todoc.model;
 
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
@@ -13,7 +12,7 @@ import android.support.annotation.Nullable;
  * @author Gaëtan HERFRAY
  */
 
-@Entity
+@Entity (tableName = "Project")
 public class Project {
     /**
      * The unique identifier of the project
@@ -57,9 +56,9 @@ public class Project {
     @NonNull
     public static Project[] getAllProjects() {
         return new Project[]{
-                new Project(1L, "Projet Tartampion", 0xFFEADAD1),
-                new Project(2L, "Projet Lucidia", 0xFFB4CDBA),
-                new Project(3L, "Projet Circus", 0xFFA3CED2),
+                new Project(1, "Projet Tartampion", 0xFFEADAD1),
+                new Project(2, "Projet Lucidia", 0xFFB4CDBA),
+                new Project(3, "Projet Circus", 0xFFA3CED2),
         };
     }
 

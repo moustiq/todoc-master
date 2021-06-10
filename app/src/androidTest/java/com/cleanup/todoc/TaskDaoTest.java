@@ -26,8 +26,12 @@ public class TaskDaoTest {
 
     private SaveTaskDataBase database;
 
+    private static int red = 0;
+    private static int green = 255;
+    private static int blue = 0;
+    private static int RGB = android.graphics.Color.argb(255, red, green, blue);
     private static long PROJECT_ID = 1;
-    private static Project PROJECT_DEMO = new Project(PROJECT_ID, "Projet Tartampion", 255255255);
+    private static Project PROJECT_DEMO = new Project(PROJECT_ID, "Projet Tartampion", RGB);
     private static Task NEW_TASK = new Task(1, "nouvelle tache ", 1510308123);
 
     @Rule

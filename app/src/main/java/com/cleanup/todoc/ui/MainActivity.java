@@ -1,7 +1,8 @@
 package com.cleanup.todoc.ui;
 
-import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModelProviders;
+import android.arch.persistence.room.Room;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,6 +11,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,10 +26,13 @@ import com.cleanup.todoc.injection.Injection;
 import com.cleanup.todoc.injection.ViewModelFactory;
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
+import com.cleanup.todoc.repositories.ProjectDataRepository;
+import com.cleanup.todoc.requeteSql.SaveTaskDataBase;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>Home activity of the application which is displayed when the user opens the app.</p>
@@ -92,11 +97,16 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     @NonNull
     private TextView lblNoTasks;
 
+    public TextView lblProjectName;
+
     private int tsLong = (int) (System.currentTimeMillis()/1000);
 
     private TaskViewModel taskViewModel;
     private TasksAdapter taskadapter;
     private static long PROJECT_ID = 1;
+
+    private ProjectDataRepository projectDataSource;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -107,12 +117,17 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         listTasks = findViewById(R.id.list_tasks);
         lblNoTasks = findViewById(R.id.lbl_no_task);
 
+
+
+        lblProjectName = findViewById(R.id.lbl_project_name);
+
         listTasks.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         listTasks.setAdapter(adapter);
 
-        this.configureViewmodel();
-        this.getCurrentProject((int) PROJECT_ID);
-        this.getTask((int) PROJECT_ID);
+
+        configureViewmodel();
+        this.getCurrentProject((long) PROJECT_ID);
+        this.getTask((long) PROJECT_ID);
 
         findViewById(R.id.fab_add_task).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,25 +143,56 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         this.taskViewModel.init(PROJECT_ID);
     }
 
-    private void getCurrentProject(int projectId) {
-        this.taskViewModel.getTask(projectId).observe(this, this::updateHeader);
+    private void getCurrentProject(long projectId) {
+        this.taskViewModel.getProject(projectId).observe(this, this::updateHeader);
+
     }
 
     private void updateHeader(Project project) {
-        this.lblNoTasks.setText(project.getName());
+        if (project != null) {
+            this.lblProjectName.setText(project.getName());
+        }
+
     }
 
-    private void getTask(int projectId) {
+    private void getTask(long projectId) {
         this.taskViewModel.getTask(projectId).observe(this, this::updateTasList);
     }
 
-    private void updateTasList(Project project) {
+    private void updateTasList(List<Task> tasks) {
+        this.adapter.updateTasks(tasks);
     }
 
-    private void createTask() {
-        Task task = new Task(PROJECT_ID, this.dialogEditText.getText().toString(),tsLong);
-        this.dialogEditText.setText("");
+
+    private void createTask(Task task) {
+
+        //Task task = new Task(PROJECT_ID, this.dialogEditText.getText().toString(),tsLong);
         this.taskViewModel.createTask(task);
+        //updateTasks();
+    }
+
+    private void getAllProject() {
+        Log.d("TOUT LES PROJETS", "getAllProject: :::  " + taskViewModel.getAllProjects().hasObservers());
+        this.taskViewModel.getProject(1).observe(this,this::creerTache);
+    }
+
+
+
+    private void creerTache(Project projects) {
+
+        //Task NEW_TASK = new Task(1, "nouvelle tache ", 1510308123);
+
+        //LiveData<List<Project>> idPro = taskViewModel.getAllProjects();
+
+        Log.d("ARRET !!! ", "creerTache: ARRET !!!  " + projects);
+
+       //for (Project p : projects)  {
+
+       //    Log.d("DATA PROJECT", "creerTache: liste data :: " + p);
+
+       //}
+
+
     }
 
     private void deleteTask(Task task) {
@@ -189,6 +235,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     public void onDeleteTask(Task task) {
         tasks.remove(task);
         updateTasks();
+        deleteTask(task);
     }
 
     /**
@@ -217,15 +264,17 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
                 // TODO: Replace this by id of persisted task
                 long id = (long) (Math.random() * 50000);
 
+                Log.d("ID PROJECT", "onPositiveButtonClick: id project : " +taskProject.getId() );
 
                 Task task = new Task(
-
                         taskProject.getId(),
                         taskName,
                         (int) new Date().getTime()
-
                 );
 
+
+                getAllProject();
+                //createTask(task);
                 addTask(task);
 
                 dialogInterface.dismiss();

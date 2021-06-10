@@ -13,7 +13,7 @@ public class TaskDataRepository {
 
 
     public TaskDataRepository(TaskDao taskDao) {
-        mTaskDao = taskDao;
+        this.mTaskDao = taskDao;
     }
 
     public LiveData<List<Task>> getTasks(long projectId) {
