@@ -11,7 +11,7 @@ import com.cleanup.todoc.repositories.TaskDataRepository;
 import java.util.List;
 import java.util.concurrent.Executor;
 
-public class TaskViewModel extends ViewModel {
+public class MainViewModel extends ViewModel {
 
     private final ProjectDataRepository projectDataSource;
     private final TaskDataRepository taskDataSource;
@@ -20,7 +20,7 @@ public class TaskViewModel extends ViewModel {
     private LiveData<Project> currentProject;
 
 
-    public TaskViewModel(ProjectDataRepository projectDataSource, TaskDataRepository taskDataSource, Executor executors) {
+    public MainViewModel(ProjectDataRepository projectDataSource, TaskDataRepository taskDataSource, Executor executors) {
         this.projectDataSource = projectDataSource;
         this.taskDataSource = taskDataSource;
         this.executors = executors;

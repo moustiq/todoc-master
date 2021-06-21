@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.cleanup.todoc.repositories.ProjectDataRepository;
 import com.cleanup.todoc.repositories.TaskDataRepository;
-import com.cleanup.todoc.ui.TaskViewModel;
+import com.cleanup.todoc.ui.MainViewModel;
 
 import java.util.concurrent.Executor;
 
@@ -25,8 +25,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory{
 
     //@NonNull
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        if (modelClass.isAssignableFrom(TaskViewModel.class)) {
-            return (T) new TaskViewModel(projectDataSource,taskDataSource, executors);
+        if (modelClass.isAssignableFrom(MainViewModel.class)) {
+            return (T) new MainViewModel(projectDataSource,taskDataSource, executors);
         }
         throw new IllegalArgumentException("Unknown ViewModel class");
     }

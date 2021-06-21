@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
     private int tsLong = (int) (System.currentTimeMillis()/1000);
 
-    private TaskViewModel taskViewModel;
+    private MainViewModel taskViewModel;
     private TasksAdapter taskadapter;
     private static long PROJECT_ID = 0;
     private List<String> idProName = new ArrayList<>();
@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
     private void configureViewmodel() {
         ViewModelFactory viewModelFactory = Injection.provideViewModelFactory(this);
-        this.taskViewModel = ViewModelProviders.of(this, viewModelFactory).get(TaskViewModel.class);
+        this.taskViewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel.class);
         this.taskViewModel.init(PROJECT_ID);
     }
 
@@ -174,8 +174,13 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
 
     private void updateTasList(List<Task> tasks) {
-        this.tasks.add(tasks.get(tasks.size() - 1));
+        Log.e("get task", "updateTasList: " );
+        for(Task t : tasks) {
+            this.tasks.add(t);
+        }
+
         this.adapter.updateTasks(tasks);
+        updateTasks();
     }
 
     public void getAllTask() {
@@ -185,6 +190,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     private void allTask(List<Task> task) {
 
         tasks.add(task.get(task.size() - 1));
+        Log.e("ajout derniere task", "allTask: " );
         updateTasks();
         Log.d("AJOUT TASK", "allTask: " + task.get(task.size() - 1));
 
@@ -195,8 +201,9 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
         //Task task = new Task(PROJECT_ID, this.dialogEditText.getText().toString(),tsLong);
         this.taskViewModel.createTask(task);
+        Log.e("PASSAGE", "createTask: " );
         //this.taskViewModel.upadtask(task);
-        updateTasks();
+
     }
 
     private void getAllProject() {
@@ -290,7 +297,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
                 createTask(task);
                 //addTask(task);
-                upadeTask(task);
+                //upadeTask(task);
                 getAllTask();
 
                 dialogInterface.dismiss();
