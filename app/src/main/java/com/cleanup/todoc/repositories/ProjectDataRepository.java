@@ -1,6 +1,7 @@
 package com.cleanup.todoc.repositories;
 
-import android.arch.lifecycle.LiveData;
+
+import androidx.lifecycle.LiveData;
 
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.requeteSql.dao.ProjectDao;
@@ -16,11 +17,15 @@ public class ProjectDataRepository {
         this.projectDao = projectDao;
     }
 
-    public LiveData<Project> getProject(long projectId) {
-        return this.projectDao.getProject(projectId);
+    public LiveData<Project> getProject(String projectName) {
+        return this.projectDao.getProject(projectName);
     }
 
     public LiveData<List<Project>> getAllProjects() {
         return this.projectDao.getAllProjects();
+    }
+
+    public LiveData<Project> getProjectId(long projectId) {
+        return this.projectDao.getProjectId(projectId);
     }
 }

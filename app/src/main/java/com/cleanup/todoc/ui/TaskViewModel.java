@@ -1,7 +1,7 @@
 package com.cleanup.todoc.ui;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.ViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModel;
 
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
@@ -30,26 +30,28 @@ public class TaskViewModel extends ViewModel {
         if (this.currentProject != null) {
             return;
         }
-        currentProject = projectDataSource.getProject(projectId);
+        currentProject = projectDataSource.getProjectId(projectId);
     }
 
-    public LiveData<Project> getProject(long projectId) {
+    public LiveData<Project> getProject(String projectName) {
         //return currentProject.getValue().get((int) projectId);
-        return projectDataSource.getProject(projectId);
+        return projectDataSource.getProject(projectName);
     }
 
     public LiveData<List<Project>> getAllProjects() {
         return projectDataSource.getAllProjects();
     }
 
-    public LiveData<List<Task>> getTask (long taskId) {
-        return taskDataSource.getTasks(taskId);
+    public LiveData<List<Task>> getTask () {
+        return taskDataSource.getTasks();
     }
 
     public void createTask(Task task) {
-        executors.execute(() ->{
-                taskDataSource.createTask(task);
-        });
+        executors.execute(() -> taskDataSource.createTask(task));
+    }
+
+    public LiveData<List<Task>> getTaskName(){
+        return taskDataSource.getTaskName();
     }
 
     public void deleteTask(long taksId) {

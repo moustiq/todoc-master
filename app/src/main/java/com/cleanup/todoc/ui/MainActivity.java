@@ -1,16 +1,8 @@
 package com.cleanup.todoc.ui;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.ViewModelProviders;
-import android.arch.persistence.room.Room;
+
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,13 +13,20 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.cleanup.todoc.R;
 import com.cleanup.todoc.injection.Injection;
 import com.cleanup.todoc.injection.ViewModelFactory;
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
 import com.cleanup.todoc.repositories.ProjectDataRepository;
-import com.cleanup.todoc.requeteSql.SaveTaskDataBase;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -103,7 +102,9 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
     private TaskViewModel taskViewModel;
     private TasksAdapter taskadapter;
-    private static long PROJECT_ID = 1;
+    private static long PROJECT_ID = 0;
+    private List<String> idProName = new ArrayList<>();
+
 
     private ProjectDataRepository projectDataSource;
 
@@ -118,7 +119,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         lblNoTasks = findViewById(R.id.lbl_no_task);
 
 
-
         lblProjectName = findViewById(R.id.lbl_project_name);
 
         listTasks.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
@@ -126,8 +126,9 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
 
         configureViewmodel();
-        this.getCurrentProject((long) PROJECT_ID);
-        this.getTask((long) PROJECT_ID);
+        updateTasks();
+        this.getTask();
+        this.getAllProject();
 
         findViewById(R.id.fab_add_task).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,24 +144,50 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         this.taskViewModel.init(PROJECT_ID);
     }
 
-    private void getCurrentProject(long projectId) {
-        this.taskViewModel.getProject(projectId).observe(this, this::updateHeader);
+    private void getCurrentProject(String projectName) {
+        this.taskViewModel.getProject(projectName).observe(this, this::updateHeader);
 
     }
 
-    private void updateHeader(Project project) {
-        if (project != null) {
-            this.lblProjectName.setText(project.getName());
+    private long updateHeader(Project project) {
+        if (project != null & lblProjectName != null) {
+            this.lblProjectName.setText( project.getName());
+
         }
-
+        return PROJECT_ID;
     }
 
-    private void getTask(long projectId) {
-        this.taskViewModel.getTask(projectId).observe(this, this::updateTasList);
+    private void getSelectedProject(String projectName) {
+        this.taskViewModel.getProject(projectName).observe(this, this::getPojectSelectedName);
     }
+
+    private long getPojectSelectedName(Project project) {
+        //project.getId();
+        Log.d("PROJECT ID SELECTED", "updateHeader: " + (int) project.getId());
+        PROJECT_ID = project.getId();
+        return PROJECT_ID;
+    }
+
+    private void getTask() {
+        this.taskViewModel.getTask().observe(this, this::updateTasList);
+    }
+
 
     private void updateTasList(List<Task> tasks) {
+        this.tasks.add(tasks.get(tasks.size() - 1));
         this.adapter.updateTasks(tasks);
+    }
+
+    public void getAllTask() {
+        this.taskViewModel.getTaskName().observe(this, this::allTask);
+    }
+
+    private void allTask(List<Task> task) {
+
+        tasks.add(task.get(task.size() - 1));
+        updateTasks();
+        Log.d("AJOUT TASK", "allTask: " + task.get(task.size() - 1));
+
     }
 
 
@@ -168,31 +195,21 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
         //Task task = new Task(PROJECT_ID, this.dialogEditText.getText().toString(),tsLong);
         this.taskViewModel.createTask(task);
-        //updateTasks();
+        //this.taskViewModel.upadtask(task);
+        updateTasks();
     }
 
     private void getAllProject() {
-        Log.d("TOUT LES PROJETS", "getAllProject: :::  " + taskViewModel.getAllProjects().hasObservers());
-        this.taskViewModel.getProject(1).observe(this,this::creerTache);
+        this.taskViewModel.getAllProjects().observe(this, this::creerTache);
     }
 
 
+    private ArrayList<String> creerTache(List<Project> projects) {
 
-    private void creerTache(Project projects) {
-
-        //Task NEW_TASK = new Task(1, "nouvelle tache ", 1510308123);
-
-        //LiveData<List<Project>> idPro = taskViewModel.getAllProjects();
-
-        Log.d("ARRET !!! ", "creerTache: ARRET !!!  " + projects);
-
-       //for (Project p : projects)  {
-
-       //    Log.d("DATA PROJECT", "creerTache: liste data :: " + p);
-
-       //}
-
-
+       for (Project p : projects)  {
+          idProName.add(p.getName());
+       }
+       return (ArrayList<String>) idProName;
     }
 
     private void deleteTask(Task task) {
@@ -245,42 +262,37 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      */
     private void onPositiveButtonClick(DialogInterface dialogInterface) {
         // If dialog is open
+        getSelectedProject((String) dialogSpinner.getSelectedItem());
+
+
         if (dialogEditText != null && dialogSpinner != null) {
             // Get the name of the task
             String taskName = dialogEditText.getText().toString();
-
-            // Get the selected project to be associated to the task
-            Project taskProject = null;
-            if (dialogSpinner.getSelectedItem() instanceof Project) {
-                taskProject = (Project) dialogSpinner.getSelectedItem();
-            }
 
             // If a name has not been set
             if (taskName.trim().isEmpty()) {
                 dialogEditText.setError(getString(R.string.empty_task_name));
             }
             // If both project and name of the task have been set
-            else if (taskProject != null) {
+            else if (PROJECT_ID != 0){
+                Log.d("SPINNER GET ITEM", "onPositiveButtonClick: " + dialogSpinner.getSelectedItem());
+                Log.d("DIALOG EDIT TEXT", "onPositiveButtonClick: " + dialogEditText.getText().toString());
                 // TODO: Replace this by id of persisted task
                 long id = (long) (Math.random() * 50000);
 
-                Log.d("ID PROJECT", "onPositiveButtonClick: id project : " +taskProject.getId() );
+                Log.d("ID PROJECT", "onPositiveButtonClick: id project : " +PROJECT_ID);
 
                 Task task = new Task(
-                        taskProject.getId(),
+                        PROJECT_ID,
                         taskName,
                         (int) new Date().getTime()
                 );
 
+                createTask(task);
+                //addTask(task);
+                upadeTask(task);
+                getAllTask();
 
-                getAllProject();
-                //createTask(task);
-                addTask(task);
-
-                dialogInterface.dismiss();
-            }
-            // If name has been set, but project has not been set (this should never occur)
-            else{
                 dialogInterface.dismiss();
             }
         }
@@ -390,7 +402,8 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      * Sets the data of the Spinner with projects to associate to a new task
      */
     private void populateDialogSpinner() {
-        final ArrayAdapter<Project> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, allProjects);
+
+        final ArrayAdapter<Project> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item,(ArrayList) idProName);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         if (dialogSpinner != null) {
             dialogSpinner.setAdapter(adapter);

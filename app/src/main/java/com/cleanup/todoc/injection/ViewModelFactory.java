@@ -1,8 +1,8 @@
 package com.cleanup.todoc.injection;
 
-import android.arch.lifecycle.ViewModel;
-import android.arch.lifecycle.ViewModelProvider;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.cleanup.todoc.repositories.ProjectDataRepository;
 import com.cleanup.todoc.repositories.TaskDataRepository;
@@ -23,8 +23,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory{
 
     }
 
-    @NonNull
-    @Override
+    //@NonNull
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(TaskViewModel.class)) {
             return (T) new TaskViewModel(projectDataSource,taskDataSource, executors);

@@ -1,13 +1,12 @@
 package com.cleanup.todoc.requeteSql.dao;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.persistence.room.Dao;
-import android.arch.persistence.room.Insert;
-import android.arch.persistence.room.OnConflictStrategy;
-import android.arch.persistence.room.Query;
+import androidx.lifecycle.LiveData;
+import androidx.room.Dao;
+import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
+import androidx.room.Query;
 
 import com.cleanup.todoc.model.Project;
-import com.cleanup.todoc.model.Task;
 
 import java.util.List;
 
@@ -17,10 +16,13 @@ public interface ProjectDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void createProject(Project project);
 
-    @Query("SELECT * FROM Project WHERE id = :projectId")
-    LiveData<Project>getProject(long projectId);
+    @Query("SELECT * FROM Project WHERE name = :projectName")
+    LiveData<Project> getProject(String projectName);
 
-    @Query("SELECT * FROM Project ")
-    LiveData<List<Project>>getAllProjects();
+    @Query("SELECT * FROM Project WHERE id = :projectId")
+    LiveData<Project> getProjectId(long projectId);
+
+    @Query("SELECT * FROM Project")
+    LiveData<List<Project>> getAllProjects();
 
 }

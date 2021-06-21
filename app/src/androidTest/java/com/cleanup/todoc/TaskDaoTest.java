@@ -1,9 +1,9 @@
 package com.cleanup.todoc;
 
-import android.arch.core.executor.testing.InstantTaskExecutorRule;
-import android.arch.persistence.room.Room;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.runner.AndroidJUnit4;
+
+import androidx.room.Room;
+import androidx.test.InstrumentationRegistry;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
@@ -34,8 +34,7 @@ public class TaskDaoTest {
     private static Project PROJECT_DEMO = new Project(PROJECT_ID, "Projet Tartampion", RGB);
     private static Task NEW_TASK = new Task(1, "nouvelle tache ", 1510308123);
 
-    @Rule
-    public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
+
 
     @Before
     public void initDb() throws Exception {
@@ -54,7 +53,7 @@ public class TaskDaoTest {
     public void insertAndGetUser() throws InterruptedException {
 
         this.database.projectDao().createProject(PROJECT_DEMO);
-        Project project = LiveDataTestUtil.getValue(this.database.projectDao().getProject(PROJECT_ID));
+        Project project = LiveDataTestUtil.getValue(this.database.projectDao().getProjectId(PROJECT_ID));
         assertTrue(project.getName().equals(PROJECT_DEMO.getName()) && project.getId() == PROJECT_ID);
     }
 
