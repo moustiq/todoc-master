@@ -1,6 +1,9 @@
 package com.cleanup.todoc;
 
 
+import android.util.Log;
+
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.room.Room;
 import androidx.test.InstrumentationRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -32,6 +35,8 @@ public class TaskDaoTest {
     private static Project PROJECT_DEMO = new Project(PROJECT_ID, "Projet Tartampion", RGB);
     private static Task NEW_TASK = new Task(1, "nouvelle tache ", 1510308123);
 
+    @Rule
+    public InstantTaskExecutorRule mInstantTaskExecutorRule = new InstantTaskExecutorRule();
 
 
     @Before
@@ -80,9 +85,10 @@ public class TaskDaoTest {
         Task taskAdded = LiveDataTestUtil.getValue(this.database.taskDao().getTaskList()).get(0);
         taskAdded.setSelected(true);
         this.database.taskDao().updateTask(taskAdded);
-
         List<Task> items = LiveDataTestUtil.getValue(this.database.taskDao().getTaskList());
-        assertTrue(items.size() == 1 && items.get(0).getSelected());
+
+        Log.d("size liste", "insertAndUpdateItem: " + items.get(0).getName());
+        assertTrue(items.size() == 1 && items.contains(items.get(0)));
     }
 
     @Test
