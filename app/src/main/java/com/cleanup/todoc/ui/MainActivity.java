@@ -98,13 +98,8 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
     public TextView lblProjectName;
 
-    private int tsLong = (int) (System.currentTimeMillis()/1000);
-
     private MainViewModel taskViewModel;
-    private TasksAdapter taskadapter;
-    //private static long PROJECT_ID = 0;
-    private static List<Integer> PROJECT_ID = new ArrayList<Integer>();
-    private List<String> idProName = new ArrayList<>();
+    private List<Project> idProName = new ArrayList<Project>();
 
 
     private ProjectDataRepository projectDataSource;
@@ -126,8 +121,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         listTasks.setAdapter(adapter);
 
 
-        configureViewmodel();
-        updateTasks();
+        this.configureViewmodel();
         this.getTask();
         this.getAllProject();
 
@@ -142,61 +136,36 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     private void configureViewmodel() {
         ViewModelFactory viewModelFactory = Injection.provideViewModelFactory(this);
         this.taskViewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel.class);
-        if (PROJECT_ID.size()>0) {
-            this.taskViewModel.init(PROJECT_ID.get(0));
+
+    }
+
+    private int getSelectedProject(Object projects) {
+        int val = 0;
+        for (Project p : idProName) {
+            if (p.getName().equals(projects.toString())) {
+                val = (int) p.getId();
+            }
         }
-
+        return val;
     }
 
-    private void getSelectedProject(String projectName) {
-        this.taskViewModel.getProject(projectName).observe(this, this::getPojectSelectedName);
-    }
-
-    private void getPojectSelectedName(Project project) {
-        //project.getId();
-        Log.d("PROJECT ID SELECTED", "updateHeader: " + (int) project.getId());
-        //PROJECT_ID = project.getId();
-        PROJECT_ID.add((int)project.getId());
-        Log.d("PROJECT ID LIST", "getPojectSelectedName: " + PROJECT_ID);
-        //return PROJECT_ID;
-    }
 
     private void getTask() {
         this.taskViewModel.getTask().observe(this, this::updateTasList);
     }
 
 
-    private int updateTasList(List<Task> task) {
-
-        for(Task t : task) {
-            Log.e("get task", "updateTasList: " + t.getName());
-            this.tasks.add(t);
-        }
-
+    private void updateTasList(List<Task> task) {
+        this.tasks.addAll(task);
         updateTasks();
-        return task.size();
-    }
-
-    public void getAllTask() {
-        this.taskViewModel.getTaskName().observe(this, this::allTask);
-    }
-
-    private void allTask(List<Task> task) {
-        //tasks.clear();
-        if (task.size() > 0) {
-            tasks.add(task.get(task.size() - 1));
-            Log.d("TASK ET PROJECT AJOUTER", "allTask: " + task.get(task.size() - 1).getName());
-        }else {
-            tasks.add(task.get(0));
-        }
-
     }
 
     private void createTask(Task task) {
-        tasks.clear();
+
         this.taskViewModel.createTask(task);
         Log.e("PASSAGE", "createTask: " );
-        updateTasks();
+        tasks.clear();
+        upadeTask(task);
 
     }
 
@@ -205,12 +174,8 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     }
 
 
-    private ArrayList<String> getProjectName(List<Project> projects) {
-
-       for (Project p : projects)  {
-          idProName.add(p.getName());
-       }
-       return (ArrayList<String>) idProName;
+    private void getProjectName(List<Project> projects) {
+        idProName.addAll(projects);
     }
 
     private void deleteTask(Task task) {
@@ -249,7 +214,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
     @Override
     public void onDeleteTask(Task task) {
-        //tasks.remove(task);
         deleteTask(task);
         upadeTask(task);
         updateTasks();
@@ -262,46 +226,28 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      * @param dialogInterface the current displayed dialog
      */
     private void onPositiveButtonClick(DialogInterface dialogInterface) {
+        Integer PROJECT_ID = 0;
         // If dialog is open
-        int n = 0;
         if (dialogEditText != null && dialogSpinner != null) {
-            getSelectedProject((String) dialogSpinner.getSelectedItem());
-            n+=1;
+
+            PROJECT_ID = getSelectedProject(dialogSpinner.getSelectedItem());
 
             // Get the name of the task
             String taskName = dialogEditText.getText().toString();
-            if (PROJECT_ID.size() > 0) {
+            if (PROJECT_ID > 0) {
                 // If a name has not been set
                 if (taskName.trim().isEmpty()) {
                     dialogEditText.setError(getString(R.string.empty_task_name));
                 }
                 // If both project and name of the task have been set
-                else if (PROJECT_ID.get(0) != 0 ){
-
-                    Log.d("PASSE ICI", "onPositiveButtonClick: " + n);
-                    Log.d("SPINNER GET ITEM", "onPositiveButtonClick: " + dialogSpinner.getSelectedItem());
-                    Log.d("DIALOG EDIT TEXT", "onPositiveButtonClick: " + dialogEditText.getText().toString());
-                    // TODO: Replace this by id of persisted task
-                    long id = (long) (Math.random() * 50000);
-
-                    Log.d("ID PROJECT", "onPositiveButtonClick: id project : " +PROJECT_ID);
+                else {
 
                     Task task = new Task(
-                            PROJECT_ID.get(PROJECT_ID.size()-1),
+                            PROJECT_ID,
                             taskName,
                             (int) new Date().getTime()
                     );
-
                     createTask(task);
-
-
-                    PROJECT_ID.clear();
-                    Log.d("PROJECT ID AFTER CLEAR", "onPositiveButtonClick: "+ PROJECT_ID);
-                    dialogInterface.dismiss();
-
-
-                }else {
-                    Log.e("VALEUR PROJECT ID", "onPositiveButtonClick: " + PROJECT_ID );
                     dialogInterface.dismiss();
                 }
             }
@@ -325,6 +271,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         dialogSpinner = dialog.findViewById(R.id.project_spinner);
 
         populateDialogSpinner();
+
     }
 
     /**

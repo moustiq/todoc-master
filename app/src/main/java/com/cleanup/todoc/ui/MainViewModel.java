@@ -17,20 +17,11 @@ public class MainViewModel extends ViewModel {
     private final TaskDataRepository taskDataSource;
     private final Executor executors;
 
-    private LiveData<Project> currentProject;
-
 
     public MainViewModel(ProjectDataRepository projectDataSource, TaskDataRepository taskDataSource, Executor executors) {
         this.projectDataSource = projectDataSource;
         this.taskDataSource = taskDataSource;
         this.executors = executors;
-    }
-
-    public void init(long projectId) {
-        if (this.currentProject != null) {
-            return;
-        }
-        currentProject = projectDataSource.getProjectId(projectId);
     }
 
     public LiveData<Project> getProject(String projectName) {
