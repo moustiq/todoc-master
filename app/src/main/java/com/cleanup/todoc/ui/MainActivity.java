@@ -102,9 +102,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     private List<Project> idProName = new ArrayList<Project>();
 
 
-    private ProjectDataRepository projectDataSource;
-
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -163,7 +160,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     private void createTask(Task task) {
 
         this.taskViewModel.createTask(task);
-        Log.e("PASSAGE", "createTask: " );
         tasks.clear();
         upadeTask(task);
 
@@ -348,7 +344,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
                     @Override
                     public void onClick(View view) {
                         onPositiveButtonClick(dialog);
-                        //dialogInterface.dismiss();
                     }
                 });
             }

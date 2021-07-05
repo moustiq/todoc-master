@@ -50,11 +50,8 @@ public abstract class SaveTaskDataBase extends RoomDatabase {
                 ContentValues contentValues = new ContentValues();
                 List<Project> projects = Arrays.asList(Project.getAllProjects());
 
-                Log.d("pre populate ", "onCreate: Project :: " + projects);
-
                 for (Project p : projects) {
 
-                    Log.d("pre populate BDD", "onCreate: getProject :: " + p.getId());
                     contentValues.put("id", p.getId());
                     contentValues.put("name", p.getName());
                     contentValues.put("color", p.getColor());

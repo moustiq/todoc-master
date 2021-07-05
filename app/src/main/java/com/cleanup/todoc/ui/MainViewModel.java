@@ -41,9 +41,6 @@ public class MainViewModel extends ViewModel {
         executors.execute(() -> taskDataSource.createTask(task));
     }
 
-    public LiveData<List<Task>> getTaskName(){
-        return taskDataSource.getTaskName();
-    }
 
     public void deleteTask(long taksId) {
         executors.execute(() ->{
