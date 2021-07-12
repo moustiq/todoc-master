@@ -212,15 +212,15 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      * @param dialogInterface the current displayed dialog
      */
     private void onPositiveButtonClick(DialogInterface dialogInterface) {
-        int PROJECT_ID;
+        int projectId;
         // If dialog is open
         if (dialogEditText != null && dialogSpinner != null) {
 
-            PROJECT_ID = getSelectedProject(dialogSpinner.getSelectedItem());
+            projectId = getSelectedProject(dialogSpinner.getSelectedItem());
 
             // Get the name of the task
             String taskName = dialogEditText.getText().toString();
-            if (PROJECT_ID > 0) {
+            if (projectId > 0) {
                 // If a name has not been set
                 if (taskName.trim().isEmpty()) {
                     dialogEditText.setError(getString(R.string.empty_task_name));
@@ -229,7 +229,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
                 else {
 
                     Task task = new Task(
-                            PROJECT_ID,
+                            projectId,
                             taskName,
                             (int) new Date().getTime()
                     );
