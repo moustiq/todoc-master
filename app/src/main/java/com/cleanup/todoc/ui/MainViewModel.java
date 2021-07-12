@@ -24,11 +24,6 @@ public class MainViewModel extends ViewModel {
         this.executors = executors;
     }
 
-    public LiveData<Project> getProject(String projectName) {
-        //return currentProject.getValue().get((int) projectId);
-        return projectDataSource.getProject(projectName);
-    }
-
     public LiveData<List<Project>> getAllProjects() {
         return projectDataSource.getAllProjects();
     }
@@ -43,14 +38,10 @@ public class MainViewModel extends ViewModel {
 
 
     public void deleteTask(long taksId) {
-        executors.execute(() ->{
-            taskDataSource.deleteTask(taksId);
-        });
+        executors.execute(() -> taskDataSource.deleteTask(taksId));
     }
 
     public void upadtask(Task task) {
-        executors.execute(() ->{
-            taskDataSource.updateTask(task);
-        });
+        executors.execute(() -> taskDataSource.updateTask(task));
     }
 }

@@ -1,8 +1,6 @@
 package com.cleanup.todoc.requeteSql.dao;
 
 
-import android.database.Cursor;
-
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
@@ -18,10 +16,7 @@ public interface TaskDao {
 
     @Query("SELECT * FROM Task ")
     LiveData<List<Task>> getTaskList();
-    
 
-    @Query("SELECT * FROM Task ")
-    LiveData<List<Task>> getTaskName();
 
     @Insert
     long insertTask(Task task);

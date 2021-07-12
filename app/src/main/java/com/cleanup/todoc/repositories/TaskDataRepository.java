@@ -24,10 +24,6 @@ public class TaskDataRepository {
         mTaskDao.insertTask(task);
     }
 
-    public LiveData<List<Task>> getTaskName(){
-        return mTaskDao.getTaskName();
-    }
-
     public void deleteTask(long taskId) {
         mTaskDao.deleteTask(taskId);
     }
