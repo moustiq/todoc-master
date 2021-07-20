@@ -169,7 +169,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     }
 
     private void upadeTask(Task task) {
-        task.setSelected(!task.getSelected());
         this.taskViewModel.upadtask(task);
     }
 

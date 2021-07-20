@@ -47,7 +47,7 @@ public class Project {
         this.color = color;
     }
 
-    //public Project() { }
+
     /**
      * Returns all the projects of the application.
      *

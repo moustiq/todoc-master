@@ -35,7 +35,6 @@ public class Task {
      * The name of the task
      */
     // Suppress warning because setName is called in constructor
-    @SuppressWarnings("NullableProblems")
     @NonNull
     @ColumnInfo(name = "name")
     private String name;
@@ -46,8 +45,6 @@ public class Task {
     private int creationTimestamp ;
     //private Long tsLong = System.currentTimeMillis()/1000;
 
-    @Ignore
-    private boolean isSelected;
     /**
      * Instantiates a new Task.
      *
@@ -134,15 +131,6 @@ public class Task {
     public int getCreationTimestamp() {
         return creationTimestamp;
     }
-
-    public void setSelected(Boolean selected) {
-        isSelected = selected;
-    }
-
-    public boolean getSelected() {
-        return isSelected;
-    }
-
 
 
     /**

@@ -16,8 +16,6 @@ public interface ProjectDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void createProject(Project project);
 
-    @Query("SELECT * FROM Project WHERE name = :projectName")
-    LiveData<Project> getProject(String projectName);
 
     @Query("SELECT * FROM Project WHERE id = :projectId")
     LiveData<Project> getProjectId(long projectId);
